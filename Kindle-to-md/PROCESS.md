@@ -2,23 +2,23 @@
 
 ## Overview
 
-Pipeline automatisé qui convertit des livres (PDF ou Markdown) en Markdown structuré, distille chaque chapitre à travers 3 lenses analytiques, et synthétise des insights thématiques — le tout propulsé par Claude.
+Automated pipeline that converts books (PDF or Markdown) into structured Markdown, distills each chapter through 3 analytical lenses, and synthesizes thematic insights — all powered by Claude.
 
-**Repo** : [yasser-ensembl3/Kindle-to-pdf](https://github.com/yasser-ensembl3/Kindle-to-pdf)
+**Repo**: [yasser-ensembl3/Kindle-to-pdf](https://github.com/yasser-ensembl3/Kindle-to-pdf)
 
 ---
 
-## Stack technique
+## Tech Stack
 
-| Composant | Technologie |
-|-----------|-------------|
-| Langage | Python 3.10+ |
+| Component | Technology |
+|-----------|------------|
+| Language | Python 3.10+ |
 | CLI | Typer + Rich |
-| Extraction PDF | pdfplumber |
-| Modèles de données | Pydantic v2 |
-| Appels LLM | Claude Code CLI (`claude -p`) |
+| PDF extraction | pdfplumber |
+| Data models | Pydantic v2 |
+| LLM calls | Claude Code CLI (`claude -p`) |
 | Google Drive | google-api-python-client + OAuth2 |
-| Parallélisme | concurrent.futures.ThreadPoolExecutor (10 workers) |
+| Parallelism | concurrent.futures.ThreadPoolExecutor (10 workers) |
 
 ---
 
@@ -27,26 +27,26 @@ Pipeline automatisé qui convertit des livres (PDF ou Markdown) en Markdown stru
 ```
 Kindle-to-md/
 ├── src/
-│   ├── cli/commands.py            # Point d'entrée CLI — 5 commandes
+│   ├── cli/commands.py            # CLI entry point — 5 commands
 │   ├── extractors/
-│   │   ├── pdf.py                 # Extraction PDF (pdfplumber)
-│   │   ├── markdown_parser.py     # Parser de .md (3 formats supportés)
-│   │   └── chapter_detector.py    # Détection chapitres/parties (regex)
+│   │   ├── pdf.py                 # PDF extraction (pdfplumber)
+│   │   ├── markdown_parser.py     # .md parser (3 supported formats)
+│   │   └── chapter_detector.py    # Chapter/part detection (regex)
 │   ├── converters/
-│   │   └── book_markdown.py       # Book → Markdown Obsidian
+│   │   └── book_markdown.py       # Book → Obsidian Markdown
 │   ├── models/
-│   │   └── book.py                # Modèles Pydantic (Book, Chapter, Part)
+│   │   └── book.py                # Pydantic models (Book, Chapter, Part)
 │   ├── prompts/
-│   │   └── generator.py           # Génération de prompts depuis templates
+│   │   └── generator.py           # Prompt generation from templates
 │   ├── drive/
-│   │   └── client.py              # Client Google Drive API v3
-│   └── config.py                  # Chemins et config par défaut
+│   │   └── client.py              # Google Drive API v3 client
+│   └── config.py                  # Paths and default config
 ├── templates/
-│   ├── distillation_chapter.md    # Prompt 3-lenses par chapitre
-│   ├── distillation_assembly.md   # Prompt d'assemblage
-│   └── insights_synthesis.md      # Prompt de synthèse thématique
-├── watch.sh                       # Watcher launchd pour inbox/
-├── com.kindle2md.watcher.plist    # Config macOS launchd
+│   ├── distillation_chapter.md    # Per-chapter 3-lens prompt
+│   ├── distillation_assembly.md   # Assembly prompt
+│   └── insights_synthesis.md      # Thematic synthesis prompt
+├── watch.sh                       # launchd watcher for inbox/
+├── com.kindle2md.watcher.plist    # macOS launchd config
 ├── pyproject.toml
 ├── requirements.txt
 └── INSTALL.md
@@ -54,52 +54,52 @@ Kindle-to-md/
 
 ---
 
-## Pipeline — Comment ça marche
+## Pipeline — How It Works
 
-### Étape 1 : Extraction
+### Step 1: Extraction
 
-**Commande** : `kindle2md extract <fichier>`
+**Command**: `kindle2md extract <file>`
 
-- **PDF** : pdfplumber extrait le texte page par page → détecte et supprime les headers/footers récurrents (>30% de fréquence) → corrige les mots coupés par trait d'union en fin de ligne → détecte les chapitres/parties via regex
-- **Markdown** : Le parser gère 3 formats :
-  - Epub-converted : `C[HAPTER]{.small}`
-  - Standard : `## Chapter N - Title`
-  - Numéroté : `## 1. Title`
-- Auto-détecte les parties, supprime le backmatter (notes, appendice, etc.)
+- **PDF**: pdfplumber extracts text page by page → detects and removes recurring headers/footers (>30% frequency) → fixes hyphenated word breaks at line endings → detects chapter/part boundaries via regex
+- **Markdown**: Parser handles 3 formats:
+  - Epub-converted: `C[HAPTER]{.small}`
+  - Standard: `## Chapter N - Title`
+  - Numbered: `## 1. Title`
+- Auto-detects parts, strips backmatter (notes, appendix, etc.)
 
-**Output** : `book.md` (Markdown structuré avec frontmatter YAML + TOC Obsidian) + fichiers chapitres individuels dans `chapters/`
+**Output**: `book.md` (structured Markdown with YAML frontmatter + Obsidian TOC) + individual chapter files in `chapters/`
 
-### Étape 2 : Distillation
+### Step 2: Distillation
 
-**Commande** : `kindle2md distill <fichier>`
+**Command**: `kindle2md distill <file>`
 
-Chaque chapitre est envoyé à Claude avec un prompt structuré (template `distillation_chapter.md`). Analyse à travers 3 lenses :
+Each chapter is sent to Claude with a structured prompt (template `distillation_chapter.md`). Analysis through 3 lenses:
 
-1. **Phénoménologie** (4-6 bullets) — ce que ça *fait ressentir* de l'intérieur. Citations, métaphores, expériences vécues
-2. **Deep Facts** (4-6 bullets) — insights de 3e à 5e niveau. Vérités contre-intuitives, mécanismes cachés
-3. **Action Items** (3-5 checkboxes) — recommandations concrètes et actionnables
+1. **Phenomenology** (4-6 bullets) — what it *feels* like from the inside. Quotes, metaphors, lived experiences
+2. **Deep Facts** (4-6 bullets) — 3rd-to-5th layer insights. Counter-intuitive truths, hidden mechanisms
+3. **Action Items** (3-5 checkboxes) — concrete, actionable recommendations
 
-**Parallélisme** : 10 appels Claude simultanés. Les gros chapitres (>15 000 mots) sont découpés en chunks automatiquement.
+**Parallelism**: 10 concurrent Claude calls. Large chapters (>15,000 words) are automatically chunked.
 
-**Assemblage** : L'assemblage final est fait localement (concaténation, pas d'appel LLM).
+**Assembly**: Final assembly is done locally (string concatenation, no LLM call).
 
-**Output** : `book_distillation.md`
+**Output**: `book_distillation.md`
 
-### Étape 3 : Synthèse
+### Step 3: Synthesis
 
-**Commande** : `kindle2md synthesize <fichier>`
+**Command**: `kindle2md synthesize <file>`
 
-La distillation complète est envoyée à Claude pour réorganiser **par thèmes** (pas par chapitre). Produit 6-10 sections thématiques numérotées en chiffres romains, avec une synthèse finale de 4-6 phrases.
+The full distillation is sent to Claude to reorganize **by theme** (not by chapter). Produces 6-10 thematic sections numbered with roman numerals, plus a 4-6 sentence core synthesis.
 
-Si la distillation est trop grande (>15 000 mots), elle est découpée en chunks, synthétisée en parallèle, puis fusionnée.
+If the distillation is too large (>15,000 words), it's chunked, synthesized in parallel, then merged.
 
-**Output** : `book_insights.md`
+**Output**: `book_insights.md`
 
-### Pipeline complet
+### Full Pipeline
 
-**Commande** : `kindle2md pipeline <fichier>` — exécute les 3 étapes d'affilée.
+**Command**: `kindle2md pipeline <file>` — runs all 3 steps end-to-end.
 
-```
+```bash
 kindle2md pipeline book.pdf --model haiku
 ```
 
@@ -107,30 +107,30 @@ kindle2md pipeline book.pdf --model haiku
 
 ## Drive Sync
 
-**Commande** : `kindle2md drive-sync <folder_url>`
+**Command**: `kindle2md drive-sync <folder_url>`
 
-Workflow :
-1. Authentification OAuth2 Google (ouvre le navigateur au premier lancement, token caché ensuite)
-2. Scan récursif du dossier Drive pour trouver les `.md`
-3. Filtre les fichiers déjà générés (`_distillation.md`, `_insights.md`)
-4. Pour chaque livre :
-   - Télécharge le `.md`
-   - Parse les chapitres (auto-détection du format)
-   - Distille en parallèle (10 workers)
-   - Synthétise les insights
-   - Upload `_distillation.md` et `_insights.md` dans le même sous-dossier Drive
+Workflow:
+1. OAuth2 Google authentication (opens browser on first run, token cached afterwards)
+2. Recursive scan of the Drive folder for `.md` files
+3. Filters out already-generated files (`_distillation.md`, `_insights.md`)
+4. For each book:
+   - Downloads the `.md` file
+   - Parses chapters (auto-detects format)
+   - Distills in parallel (10 workers)
+   - Synthesizes insights
+   - Uploads `_distillation.md` and `_insights.md` to the same Drive subfolder
 
-**Performance** : ~2.5 min pour un livre de ~60k mots / 20 chapitres.
+**Performance**: ~2.5 min for a ~60k word / 20 chapter book.
 
 ---
 
 ## Installation & Setup
 
-### Prérequis
+### Prerequisites
 
 - Python 3.10+
-- Claude Code CLI installé et authentifié (`claude -p "test"` doit fonctionner)
-- Google OAuth credentials (uniquement pour Drive sync)
+- Claude Code CLI installed and authenticated (`claude -p "test"` must work)
+- Google OAuth credentials (only for Drive sync)
 
 ### Installation
 
@@ -141,52 +141,52 @@ pip install -e .
 kindle2md --help
 ```
 
-### Google Drive (optionnel)
+### Google Drive (optional)
 
-1. Google Cloud Console → créer un projet
-2. Activer Google Drive API
-3. Créer des credentials OAuth 2.0 (Desktop ou Web)
-4. Télécharger le JSON → sauvegarder comme `credentials.json` à la racine du projet
-5. Si type Web : ajouter `http://localhost:8080/` dans les redirect URIs
+1. Google Cloud Console → create a project
+2. Enable Google Drive API
+3. Create OAuth 2.0 credentials (Desktop or Web)
+4. Download the JSON → save as `credentials.json` at the project root
+5. If Web type: add `http://localhost:8080/` to redirect URIs
 
-### Watcher launchd (optionnel)
+### launchd Watcher (optional)
 
-Surveille `inbox/` et lance le pipeline automatiquement sur les PDF déposés.
+Watches `inbox/` and automatically runs the pipeline on dropped PDF files.
 
 ```bash
-# Éditer les chemins dans le plist
+# Edit paths in the plist
 nano com.kindle2md.watcher.plist
 
-# Installer
+# Install
 cp com.kindle2md.watcher.plist ~/Library/LaunchAgents/
 launchctl load ~/Library/LaunchAgents/com.kindle2md.watcher.plist
 ```
 
 ---
 
-## Commandes de référence
+## Command Reference
 
-| Commande | Description |
-|----------|-------------|
-| `kindle2md extract <pdf>` | Extraire PDF → book.md + chapitres |
-| `kindle2md distill <pdf>` | Distiller chaque chapitre (3 lenses) |
-| `kindle2md synthesize <pdf>` | Synthétiser par thèmes |
-| `kindle2md pipeline <pdf>` | Les 3 étapes d'affilée |
-| `kindle2md drive-sync <url>` | Sync depuis Google Drive |
-| `kindle2md version` | Version de l'outil |
+| Command | Description |
+|---------|-------------|
+| `kindle2md extract <pdf>` | Extract PDF → book.md + chapters |
+| `kindle2md distill <pdf>` | Distill each chapter (3 lenses) |
+| `kindle2md synthesize <pdf>` | Synthesize by themes |
+| `kindle2md pipeline <pdf>` | All 3 steps end-to-end |
+| `kindle2md drive-sync <url>` | Sync from Google Drive |
+| `kindle2md version` | Show tool version |
 
-### Options communes
+### Common Options
 
 | Option | Description |
 |--------|-------------|
-| `--model, -m` | Modèle Claude : `haiku` (rapide), `sonnet` (équilibré), `opus` (meilleur) |
-| `--title, -t` | Forcer le titre du livre |
-| `--author, -a` | Forcer l'auteur |
-| `--output-dir, -o` | Dossier de sortie custom |
+| `--model, -m` | Claude model: `haiku` (fast), `sonnet` (balanced), `opus` (best) |
+| `--title, -t` | Override book title |
+| `--author, -a` | Override author |
+| `--output-dir, -o` | Custom output directory |
 
 ---
 
-## Modèles de données clés
+## Key Data Models
 
 ### Book (Pydantic)
 
@@ -201,17 +201,17 @@ Book
         └── start_page, end_page
 ```
 
-- Sérialisable en JSON (`book.to_json()` / `Book.from_json()`)
-- Propriétés calculées : `all_chapters`, `total_chapters`, `total_words`
+- JSON serializable (`book.to_json()` / `Book.from_json()`)
+- Computed properties: `all_chapters`, `total_chapters`, `total_words`
 
 ---
 
 ## Troubleshooting
 
-| Problème | Solution |
-|----------|----------|
-| `claude -p` ne fonctionne pas | Vérifier que Claude Code CLI est installé et authentifié |
-| Pas de chapitres détectés | Le format du livre n'est pas reconnu — vérifier les patterns dans `chapter_detector.py` |
-| Drive auth échoue | Vérifier `credentials.json`, supprimer `token.json` et réessayer |
-| Timeout sur gros livres | Augmenter le timeout dans `_call_claude()` (défaut : 300s) |
-| Chapitre trop gros | Automatiquement chunké si >15 000 mots — pas d'action requise |
+| Issue | Solution |
+|-------|----------|
+| `claude -p` not working | Verify Claude Code CLI is installed and authenticated |
+| No chapters detected | Book format not recognized — check patterns in `chapter_detector.py` |
+| Drive auth fails | Check `credentials.json`, delete `token.json` and retry |
+| Timeout on large books | Increase timeout in `_call_claude()` (default: 300s) |
+| Chapter too large | Automatically chunked if >15,000 words — no action needed |

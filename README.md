@@ -6,4 +6,4 @@ Central documentation and process guides for all projects.
 
 | Project | Description | Doc |
 |---------|-------------|-----|
-| [Kindle-to-md](Kindle-to-md/) | Pipeline de conversion de livres en Markdown structuré + distillation IA | [Process](Kindle-to-md/PROCESS.md) |
+| [Kindle-to-md](Kindle-to-md/) | Book-to-Markdown pipeline with AI distillation and thematic synthesis | [Process](Kindle-to-md/PROCESS.md) |
