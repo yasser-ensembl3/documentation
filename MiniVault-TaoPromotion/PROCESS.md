@@ -2,7 +2,9 @@
 
 ## Overview
 
-Unified project management dashboard integrating Notion, Google Drive, Gmail, GitHub, and Shopify into a single interface. Built with Next.js 14. Follows a **one repo = one project** model — each deployment is a single project configured entirely via environment variables.
+E-commerce dashboard for Shopify store management. Consolidates orders, sales analytics, web traffic, customer feedback, and operational tasks into a single interface. All data lives in Notion databases. Built with Next.js 14.
+
+Follows a **one repo = one store** model — each deployment manages a single Shopify store configured via environment variables.
 
 **Repo**: [yasser-ensembl3/Tao-promotion](https://github.com/yasser-ensembl3/Tao-promotion)
 
@@ -14,13 +16,11 @@ Unified project management dashboard integrating Notion, Google Drive, Gmail, Gi
 |-----------|------------|
 | Framework | Next.js 14 (App Router), React 18 |
 | Language | TypeScript |
-| Styling | Tailwind CSS 4 (dark mode only), Radix UI, shadcn/ui |
+| Styling | Tailwind CSS 4 (dark mode only), shadcn/ui, Radix UI |
 | Auth | NextAuth.js (Google + GitHub OAuth) |
-| Data fetching | SWR 2.3.8 (60-second cache) |
-| Charts | Recharts |
-| Database | Notion API (v2022-06-28) |
-| MCP server | Model Context Protocol for Claude integration |
-| Docs | Nextra |
+| Data fetching | SWR (60-second cache) |
+| Charts | Recharts (line, bar, pie) |
+| Database | Notion API |
 | Deployment | Vercel |
 
 ---
@@ -30,160 +30,204 @@ Unified project management dashboard integrating Notion, Google Drive, Gmail, Gi
 ```
 MiniVault-TaoPromotion/
 ├── app/
-│   ├── layout.tsx                          # Root layout with providers
-│   ├── page.tsx                            # Home (redirects to /dashboard)
-│   ├── auth/signin/page.tsx                # OAuth sign-in
-│   ├── dashboard/page.tsx                  # Main dashboard
-│   ├── tasks/page.tsx                      # Tasks page
-│   ├── recurring-tasks/page.tsx            # Recurring tasks
-│   ├── orders/page.tsx                     # Orders
-│   ├── overview/page.tsx                   # Project overview
-│   ├── essentials/page.tsx                 # Essentials
-│   ├── guides/page.tsx                     # Guides & docs
-│   ├── feedback/page.tsx                   # Feedback
-│   ├── reports/page.tsx                    # Reports
-│   ├── analytics/page.tsx                  # Analytics
-│   ├── docs/[[...mdxPath]]/               # Nextra docs
-│   └── api/
-│       ├── auth/[...nextauth]/             # NextAuth handler
-│       ├── notion/                         # 13+ Notion database routes
-│       ├── github/repo/                    # GitHub proxy
-│       ├── drive/files/                    # Google Drive proxy
-│       ├── google/gmail/                   # Gmail
-│       ├── ai/chat/                        # AI chat
-│       └── feedback/save/                  # Feedback file save
+│   ├── layout.tsx                      # Root layout (SessionProvider, SWR)
+│   ├── page.tsx                        # Redirects to /dashboard
+│   ├── dashboard/page.tsx              # Main dashboard (all sections)
+│   ├── orders/page.tsx                 # Orders with filters
+│   ├── analytics/page.tsx              # Goals + Metrics + Sales + Web Analytics
+│   ├── tasks/page.tsx                  # Kanban task board
+│   ├── recurring-tasks/page.tsx        # Recurring task tracking
+│   ├── feedback/page.tsx               # Feedback with time filters
+│   ├── essentials/page.tsx             # Tools & resources
+│   ├── guides/page.tsx                 # Documentation links
+│   ├── overview/page.tsx               # Project description
+│   ├── reports/page.tsx                # AI weekly reports
+│   ├── auth/signin/page.tsx            # OAuth sign-in
+│   └── api/notion/                     # All Notion CRUD routes
 ├── components/
-│   ├── sidebar.tsx                         # Navigation (desktop + mobile)
+│   ├── sidebar.tsx                     # Navigation (desktop + mobile)
 │   ├── dashboard/
-│   │   ├── main-dashboard.tsx              # Master orchestrator
-│   │   ├── dashboard-section.tsx           # Reusable collapsible wrapper
-│   │   └── [12 feature sections]           # One component per section
-│   └── ui/                                # shadcn/ui components
+│   │   ├── main-dashboard.tsx          # Section orchestrator
+│   │   ├── dashboard-section.tsx       # Reusable collapsible wrapper
+│   │   └── [12 feature sections]       # One component per section
+│   └── ui/                            # shadcn/ui components
 ├── lib/
-│   ├── auth.ts                            # NextAuth config
-│   ├── project-config.ts                  # Env-based project config
-│   ├── use-cached-fetch.ts                # SWR hooks
-│   ├── swr-config.tsx                     # SWR provider (60s cache)
-│   ├── api-auth.ts                        # API auth utilities
-│   └── utils.ts                           # Helpers
-├── mcp-server/                            # MCP server for Claude
-├── content/docs/                          # Nextra MDX docs
-└── types/next-auth.d.ts                   # NextAuth type augmentation
+│   ├── auth.ts                        # NextAuth config
+│   ├── project-config.ts              # Env-based config
+│   ├── use-cached-fetch.ts            # SWR hooks
+│   ├── swr-config.tsx                 # SWR provider (60s cache)
+│   └── utils.ts                       # Helpers
+└── mcp-server/                        # MCP server for Claude integration
 ```
 
 ---
 
-## How It Works
+## Dashboard Sections — How They Work
 
-### One Repo = One Project
+The dashboard is modular. Each section is collapsible (key metrics when collapsed, full detail when expanded). Sections are enabled/disabled by setting the corresponding `NEXT_PUBLIC_NOTION_DB_*` env var.
 
-Each MiniVault deployment is dedicated to a single project. No project switching in the UI. All configuration (Notion databases, GitHub repo, Drive folder) is set via `.env.local`. To manage a different project, fork/clone the repo and configure a new `.env.local`.
+### 1. Orders
 
-### Dashboard — Modular Sections
+**Route**: `/api/notion/sales`
 
-The dashboard is composed of independent, collapsible sections. Each section:
-- Shows key metrics when collapsed
-- Reveals detailed content when expanded
-- Is independently connected to its Notion database
-- Can be enabled/disabled by setting or omitting the corresponding `NEXT_PUBLIC_NOTION_DB_*` env var
+Displays 4 metric cards:
+- Unfulfilled count
+- Total orders
+- Total revenue
+- Refunded count
 
-**Section order (priority):**
+Table with: Order ID, Date, Items, Total $, Payment Status (Paid/Pending/Refunded), Fulfillment Status (Fulfilled/Unfulfilled). Calculates unfulfilled revenue and fulfillment rate.
 
-| # | Section | Data Source | Purpose |
-|---|---------|------------|---------|
-| 1 | Orders | Notion | Order fulfillment tracking |
-| 2 | Goals | Notion | Output metrics (sales, subscribers, reviews) with charts |
-| 3 | Sales Tracking | Notion | Revenue and sales analytics |
-| 4 | Web Analytics | Notion | Traffic and conversion data |
-| 5 | Metrics | Notion | Input metrics (posts, interactions) with charts |
-| 6 | Essentials | Notion | Critical tools, milestones, resources, partnerships |
-| 7 | Guides & Docs | Notion | Documentation links in card grid |
-| 8 | Overview | Notion | Project description, vision, milestones |
-| 9 | Recurring Tasks | Notion | Repeating task tracking |
-| 10 | Tasks | Notion | One-time tasks (Kanban board) |
-| 11 | Reports | Local | AI-generated weekly summaries |
-| 12 | User Feedback | Notion | Feedback collection and display |
+### 2. Goals (Output Metrics)
 
-### Metrics System
+**Route**: `/api/notion/metrics`
 
-Dual approach with interactive charts (Recharts):
+Tracks results: sales count, subscribers, Amazon reviews, etc. UI pattern: clickable metric cards → line chart with date range → recent entries table. Can create new entries via dialog form.
 
-**Goals (Outputs)** — Track results:
-- Examples: # of sales, # of subscribers, # of reviews
-- Color scheme: green
-- Clickable metric cards switch chart display
+### 3. Sales Tracking
 
-**Metrics (Inputs)** — Track actions:
-- Examples: # of posts, # of interactions, marketing ROI
-- Color scheme: blue
-- Same card-to-chart interaction pattern
+**Route**: `/api/notion/shopify?type=sales`
 
-Both use date-based tracking with normalized metric names (lowercase, no accents).
+5 metric cards: Total Sales, Net Sales, Paid Orders, Average Order Value, Returning Customer Rate. Breakdown grid: Gross Sales, Discounts, Returns, Shipping+Tax. Line chart with period-based trend.
 
-### Authentication Flow
+Period format: "Jan 1-31 2025" — parsed and sorted chronologically.
 
-1. User visits protected page → redirected to `/auth/signin`
-2. Signs in with Google or GitHub OAuth
-3. NextAuth exchanges code for access/refresh tokens
-4. Tokens stored in JWT (server-side)
-5. Session callback exposes tokens to client
-6. API routes use `getServerSession(authOptions)` to retrieve tokens for authenticated requests
+### 4. Web Analytics
 
-**Google OAuth scopes:** openid, email, profile, gmail.readonly, drive.readonly, documents.readonly
-**GitHub OAuth scopes:** read:user, user:email, repo
+**Route**: `/api/notion/shopify?type=analytics`
 
-### Data Fetching
+4 metric cards: Sessions, Conversion Rate, Add to Cart Rate, Checkout Rate.
 
-SWR (Stale-While-Revalidate) with 60-second cache:
-- `useCachedFetch<T>(url)` — generic data fetching
-- `useNotionData<T>(endpoint, databaseId)` — Notion-specific
-- `useGitHubData<T>(owner, repo)` — GitHub-specific
-- `useDriveData<T>(folderId)` — Drive-specific
+Visualizations:
+- **Traffic Sources Pie Chart**: Direct, Google, Facebook, Twitter, LinkedIn, Other
+- **Device Breakdown Bar Chart**: Desktop vs Mobile
+- **Conversion Funnel**: Sessions → Add to Cart % → Checkout % → Conversion %
+- **Recent Periods Table**: Last 5 periods
 
-Error retry: 2 attempts with 5-second intervals. Keeps previous data while fetching.
+### 5. Metrics (Input Metrics)
 
----
+**Route**: `/api/notion/metrics`
 
-## API Routes Reference
+Same structure as Goals but tracks actions/efforts: posts, interactions, marketing ROI. Blue color scheme vs green for Goals.
 
-### Notion CRUD
+### 6. Essentials
 
-All Notion routes use `NOTION_TOKEN` from env. Support GET (fetch), POST (create), PATCH (update), DELETE (remove).
+**Route**: `/api/notion/essentials`
 
-| Route | Purpose |
-|-------|---------|
-| `/api/notion/metrics` | Input metrics |
-| `/api/notion/goals` | Output metrics |
-| `/api/notion/tasks` | One-time tasks |
-| `/api/notion/recurring-tasks` | Recurring tasks |
-| `/api/notion/orders` | Orders |
-| `/api/notion/documents` | Documentation links |
-| `/api/notion/feedback` | User feedback |
-| `/api/notion/essentials` | Tools, milestones, resources |
-| `/api/notion/sales` | Sales data |
-| `/api/notion/milestones` | Project milestones |
-| `/api/notion/project-overview` | Project description |
-| `/api/notion/shopify` | Shopify integration |
-| `/api/notion/page-content` | Page content fetch |
+Grid of cards organized by type (Tool, Milestone, Strategy, Resource, Partnership, Achievement). Color-coded by priority (Critical, High, Medium). CRUD operations.
 
-### External Services
+### 7. Tasks
 
-| Route | Auth | Purpose |
-|-------|------|---------|
-| `/api/github/repo` | GitHub OAuth | Repo metadata, commits, issues, PRs |
-| `/api/drive/files` | Google OAuth | Drive folder contents |
-| `/api/google/gmail` | Google OAuth | Gmail messages |
-| `/api/ai/chat` | — | AI chat functionality |
+**Route**: `/api/notion/tasks`
+
+Kanban-style board with status flow: To Do → In Progress → Review → Done. Cards show status, priority, assignee, tags, due date. Sorted: In Progress first, then To Do, then by due date.
+
+### 8. Recurring Tasks
+
+**Route**: `/api/notion/recurring-tasks`
+
+Tracked by frequency: Daily, Weekly, Monthly, Quarterly. Shows next scheduled run and assignee.
+
+### 9. Feedback
+
+**Route**: `/api/notion/feedback`
+
+Customer/user feedback with CRUD. Filter cards: Total, This Week, This Month. Compact when empty (single-line with "Add Feedback" button). Full card list when populated.
+
+### 10. Guides & Docs
+
+**Route**: `/api/notion/documents`
+
+Card grid of documentation links with type badges (Notion, Google Drive, GitHub, etc.). CRUD operations.
 
 ---
 
-## MCP Server
+## Data Flow
 
-Located in `mcp-server/`. Model Context Protocol server enabling Claude to interact with all Notion databases directly.
+```
+Client Components
+    → useProjectConfig() gets database IDs from env vars
+    → useNotionData(endpoint, databaseId) via SWR hooks
+    → /api/notion/* routes query Notion API with NOTION_TOKEN
+    → Parse Notion response → formatted JSON
+    → Cached 60 seconds by SWR
+    → Components render with data
+```
 
-**Dependencies:** @anthropic-ai/sdk, @modelcontextprotocol/sdk, @notionhq/client
+---
 
-**Transport:** stdio
+## Notion Database Schemas
+
+### Orders
+
+| Property | Type | Values |
+|----------|------|--------|
+| Order | Text | Order ID |
+| Date | Date | Order date |
+| Items | Number | Item count |
+| Total $ | Number | Order total |
+| Payment | Select | Paid, Pending, Refunded |
+| Fulfillment | Select | Fulfilled, Unfulfilled |
+| Customer | Text | Customer name |
+
+### Sales Tracking
+
+| Property | Type |
+|----------|------|
+| Period | Text ("Jan 1-31 2025" format) |
+| Gross Sales, Net Sales, Total Sales | Number |
+| Discounts, Returns, Taxes, Shipping | Number |
+| Paid Orders, Orders Fulfilled, Average Order Value | Number |
+
+### Web Analytics
+
+| Property | Type |
+|----------|------|
+| Period | Text |
+| Sessions | Number |
+| Conversion Rate, Add to Cart Rate, Checkout Rate | Number |
+| Direct, Google, Facebook, Twitter, LinkedIn, Other | Number (traffic sources) |
+| Desktop, Mobile | Number (device split) |
+
+### Goals / Metrics
+
+| Property | Type |
+|----------|------|
+| Metric Name | Title |
+| Number | Number |
+| Last Updated | Date |
+
+### Tasks
+
+| Property | Type | Values |
+|----------|------|--------|
+| Name | Title | Task name |
+| Status | Select | To Do, In Progress, Review, Done |
+| Priority | Select | Optional |
+| Assignee | Text | Optional |
+| Tags | Multi-select | Optional |
+| Due Date | Date | Optional |
+
+### Essentials
+
+| Property | Type | Values |
+|----------|------|--------|
+| Title | Title | Item name |
+| Description | Text | Optional |
+| Type | Select | Tool, Milestone, Strategy, Resource, Partnership, Achievement |
+| Priority | Select | Critical, High, Medium |
+| URL | URL | Optional link |
+
+---
+
+## Authentication
+
+NextAuth.js with Google and GitHub OAuth. JWT-based token storage.
+
+**Google scopes**: openid, email, profile, gmail.readonly, drive.readonly, documents.readonly
+**GitHub scopes**: read:user, user:email, repo
+
+Flow: OAuth provider → NextAuth token exchange → JWT storage → session exposes tokens to client → API routes use tokens for authenticated requests.
 
 ---
 
@@ -193,89 +237,59 @@ Located in `mcp-server/`. Model Context Protocol server enabling Claude to inter
 
 - Node.js 18+
 - Notion workspace with API integration
-- Google Cloud project (OAuth + Drive API)
-- GitHub OAuth app
+- Google Cloud project (OAuth credentials)
 
 ### Installation
 
 ```bash
-cd MiniVault-TaoPromotion
 npm install
 cp .env.example .env.local
-# Edit .env.local with credentials
+# Edit .env.local
 npm run dev    # localhost:3000
 ```
 
 ### Environment Variables
 
-**Authentication (required):**
+**Auth (required):**
 
 | Variable | Description |
 |----------|-------------|
 | `NEXTAUTH_URL` | App URL |
 | `NEXTAUTH_SECRET` | Session secret |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
-| `GITHUB_ID` | GitHub OAuth app ID |
-| `GITHUB_SECRET` | GitHub OAuth app secret |
+| `GOOGLE_CLIENT_ID` / `SECRET` | Google OAuth |
+| `GITHUB_ID` / `SECRET` | GitHub OAuth (optional) |
 | `NOTION_TOKEN` | Notion integration token |
 
-**Project config:**
-
-| Variable | Description |
-|----------|-------------|
-| `NEXT_PUBLIC_PROJECT_NAME` | Display name |
-| `NEXT_PUBLIC_PROJECT_DESCRIPTION` | Project description |
-| `NEXT_PUBLIC_GITHUB_OWNER` | GitHub owner |
-| `NEXT_PUBLIC_GITHUB_REPO` | GitHub repo name |
-| `NEXT_PUBLIC_GOOGLE_DRIVE_FOLDER_ID` | Drive folder ID |
-
-**Notion database IDs (enable/disable sections):**
+**Notion Databases (set to enable section):**
 
 | Variable | Section |
 |----------|---------|
-| `NEXT_PUBLIC_NOTION_DB_TASKS` | Tasks |
-| `NEXT_PUBLIC_NOTION_DB_RECURRING_TASKS` | Recurring tasks |
-| `NEXT_PUBLIC_NOTION_DB_GOALS` | Goals |
-| `NEXT_PUBLIC_NOTION_DB_METRICS` | Metrics |
-| `NEXT_PUBLIC_NOTION_DB_MILESTONES` | Milestones |
-| `NEXT_PUBLIC_NOTION_DB_DOCUMENTS` | Docs |
-| `NEXT_PUBLIC_NOTION_DB_FEEDBACK` | Feedback |
 | `NEXT_PUBLIC_NOTION_DB_ORDERS` | Orders |
-| `NEXT_PUBLIC_NOTION_DB_ESSENTIALS` | Essentials |
-| `NEXT_PUBLIC_NOTION_DB_SALES` | Sales |
+| `NEXT_PUBLIC_NOTION_DB_GOALS` | Goals |
 | `NEXT_PUBLIC_NOTION_DB_SALES_TRACKING` | Sales tracking |
 | `NEXT_PUBLIC_NOTION_DB_WEB_ANALYTICS` | Web analytics |
+| `NEXT_PUBLIC_NOTION_DB_METRICS` | Metrics |
+| `NEXT_PUBLIC_NOTION_DB_ESSENTIALS` | Essentials |
+| `NEXT_PUBLIC_NOTION_DB_TASKS` | Tasks |
+| `NEXT_PUBLIC_NOTION_DB_RECURRING_TASKS` | Recurring tasks |
+| `NEXT_PUBLIC_NOTION_DB_FEEDBACK` | Feedback |
+| `NEXT_PUBLIC_NOTION_DB_DOCUMENTS` | Guides & docs |
 
 ### Notion Setup
 
-1. Create a Notion integration at [notion.so/my-integrations](https://www.notion.so/my-integrations)
-2. Grant read/write permissions
-3. Create databases for each section you want to enable
+1. Create integration at [notion.so/my-integrations](https://www.notion.so/my-integrations)
+2. Grant read/write access
+3. Create databases matching the schemas above
 4. Share each database with the integration
-5. Copy database IDs → set as `NEXT_PUBLIC_NOTION_DB_*` in `.env.local`
+5. Copy database IDs → set in `.env.local`
 
 ### Deployment (Vercel)
 
+Add all env vars to Vercel dashboard. Build and deploy:
+
 ```bash
-npm run build
-npm start
+npm run build && npm start
 ```
-
-Add all environment variables to Vercel dashboard. Uses `vercel.json` for config.
-
----
-
-## Key Design Patterns
-
-### DashboardSection Component
-Reusable collapsible card wrapper. Props: title, description, icon, keyMetrics (collapsed view), detailedContent (expanded view). All sections use this wrapper.
-
-### Flexible Notion Property Detection
-API routes support multiple naming conventions for Notion properties. Smart type detection handles title, rich_text, number, select, multi_select, date, and status properties automatically.
-
-### Mobile-First Responsive
-All components use Tailwind responsive prefixes. Adaptive padding, text sizing, and grid layouts. Sidebar collapses to hamburger menu on mobile.
 
 ---
 
@@ -283,10 +297,9 @@ All components use Tailwind responsive prefixes. Adaptive padding, text sizing, 
 
 | Issue | Solution |
 |-------|----------|
-| OAuth 403 on API calls | Sign out and sign back in to re-trigger consent with updated scopes |
+| Section not showing | Set the corresponding `NEXT_PUBLIC_NOTION_DB_*` env var |
 | Notion returns empty | Check `NOTION_TOKEN` and ensure database is shared with integration |
-| Section not showing | Verify the corresponding `NEXT_PUBLIC_NOTION_DB_*` env var is set |
-| GitHub section empty | Must be signed in with GitHub (not Google) |
-| Drive section empty | Must be signed in with Google (not GitHub), verify folder ID |
-| Build fails | Run `npm run lint`, check env vars are single-line formatted |
-| Metrics chart empty | Check date format in Notion database, ensure entries have date values |
+| OAuth 403 | Sign out and re-authenticate to refresh scopes |
+| Charts empty | Ensure Notion entries have proper date values in "Last Updated" |
+| Sales periods not sorting | Use "Jan 1-31 2025" format in Notion Period property |
+| Build fails | Run `npm run lint`, check env vars are single-line |
