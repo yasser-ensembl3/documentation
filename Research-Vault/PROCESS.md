@@ -1,4 +1,4 @@
-# DataVault — Process Documentation
+# Research Vault — Process Documentation
 
 ## Overview
 
@@ -26,7 +26,7 @@ Research management platform for organizing academic papers, tracking research h
 ## Architecture
 
 ```
-DataVault/
+Research Vault/
 ├── app/
 │   ├── layout.tsx                    # Root layout (sidebar, dark theme)
 │   ├── page.tsx                      # Home (redirects to /areas)
@@ -207,7 +207,7 @@ Located in `mcp-server/src/index.ts`. Provides a Model Context Protocol server e
 ### Installation
 
 ```bash
-cd DataVault
+cd Research Vault
 npm install
 cp .env.example .env.local
 # Edit .env.local with your credentials
@@ -224,7 +224,7 @@ npm run dev    # Starts on localhost:3000
 | `NOTION_ASSUMPTIONS_DATABASE_ID` | Hypotheses database ID |
 | `SEMANTIC_SCHOLAR_API_KEY` | Optional — higher rate limits for Semantic Scholar |
 | `N8N_WEBHOOK_URL` | Optional — n8n automation webhook |
-| `NEXT_PUBLIC_SITE_NAME` | Browser title (default: DataVault) |
+| `NEXT_PUBLIC_SITE_NAME` | Browser title (default: Research Vault) |
 
 ### Notion Setup
 
