@@ -8,3 +8,4 @@ Central documentation and process guides for all projects.
 |---------|-------------|-----|
 | [Kindle-to-md](Kindle-to-md/) | Book-to-Markdown pipeline with AI distillation and thematic synthesis | [Process](Kindle-to-md/PROCESS.md) |
 | [Transcript-pipeline](Transcript-pipeline/) | Auto-extract, summarize, and generate audio from YouTube/articles/podcasts via Notion | [Process](Transcript-pipeline/PROCESS.md) |
+| [DataVault](DataVault/) | Research management platform — paper search (ArXiv/Semantic Scholar), hypothesis tracking, Notion sync | [Process](DataVault/PROCESS.md) |
