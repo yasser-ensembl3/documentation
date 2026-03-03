@@ -25,3 +25,11 @@ Central documentation and process guides for all projects.
 
 # Notion database
 
+# Notion Databases Documentation
+
+## Transcripts
+
+| Database | Description | Sub-sections | Details |
+|----------|-------------|--------------|---------|
+| Transcripts | Central reference hub for all media-related content | **Archives** | Repository of past transcriptions, preserving older media content for future reference and research |
+| Transcripts | Central reference hub for all media-related content | **n8n Transcript** | Connected to the Media Vault — paste a YouTube or article URL and the system automatically generates the transcription along with its audio version, no manual processing required |
