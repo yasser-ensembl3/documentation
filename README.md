@@ -12,3 +12,4 @@ Central documentation and process guides for all projects.
 | [Stoic Vault](Stoic-Vault/) | Financial insights dashboard — quarterly reports, company comparison, AI chat, stock data pipeline | [Process](Stoic-Vault/PROCESS.md) |
 | [MiniVault (Tao Promotion)](MiniVault-TaoPromotion/) | Unified project dashboard — Notion, Drive, GitHub, Shopify integration with modular sections | [Process](MiniVault-TaoPromotion/PROCESS.md) |
 | [Founders Graph](Founders-Graph/) | Multi-source founder profiling pipeline — web scraping, LinkedIn, YouTube, LLM enrichment and synthesis | [Process](Founders-Graph/PROCESS.md) |
+| [Options Model](Options-Model/) | Montreal Exchange options dashboard — Python scraper, PostgreSQL storage, analytics charts, AI analysis | [Process](Options-Model/PROCESS.md) |
