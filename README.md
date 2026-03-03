@@ -37,3 +37,18 @@ Central documentation and process guides for all projects.
 | Yasser December 2025 | **Yasser December 2025** | All tasks for Yasser during December 2025, including progress tracking, comments, and updates for each task | [Yasser December 2025](https://www.notion.so/Yasser-December-2025-2ca58fe731b181f29cede09f2123ce18) |
 | Yasser January 2026 | **Yasser January 2026** | All tasks for Yasser during January 2026, including progress tracking, comments, and updates for each task | [Yasser January 2026](https://www.notion.so/Yasser-January-2026-2d758fe731b180e39bb9e29d30ad2216) |
 | Fournisseurs | **Fournisseurs** | List of providers sourced from TaskRabbit for the various jobs and tasks requested by Gui | [Fournisseurs](https://www.notion.so/26858fe731b180138e7dec577b3243d7?v=26858fe731b180989d51000c2f29bb33) |
+
+
+# Google Drive Documentation
+
+| Folder | Details | Link |
+|--------|---------|------|
+| Investment Reports | Folder containing all Stoic investment reports in Markdown format | [Investment Reports](https://drive.google.com/drive/folders/1KaHyEn9K1LupdYQscooXwjNxOf8QPECl) |
+| Present Agent | Folder containing all product and store URL scrapings, with all scraped data stored in CSV and JSON formats | [Present Agent](https://drive.google.com/drive/folders/1AiKHYM3y0uda7XDvxtoOSDYPkmhwOso_) |
+| Quarterly Results | Folder grouping all documents from major market companies, structured by quarter then by company. Each folder contains the original documents in PDF and Markdown format, along with extracted insights in Markdown and JSON formats | [Quarterly Results](https://drive.google.com/drive/folders/1W8JpWlOXcL2telVbmcSi4CLqTYYRPVL6) |
+| Founders Sales Nav | Extracted information about Montreal-based founders from their visible LinkedIn profiles, all stored in Markdown format | [Founders Sales Nav](https://drive.google.com/drive/folders/1APd-n-gHN2Q-_NjhoREIITlNP8AGdJPx) |
+| Board Documents | Folder grouping all documents related to each Nolk board meeting, with all documents merged into a single PDF per board session | [Board Documents](https://drive.google.com/drive/folders/1XJ0dei5TRqrGO9VBqZZtaXYoDjwIa0og) |
+| Knowledge | Folder containing all knowledge sources collected and formatted in Markdown — including books, podcasts, quotes, and more | [Knowledge](https://drive.google.com/drive/folders/1m874HrsS4DO7v9Y4pI4ES1sF2g4ktUlq) |
+| Lyrics | Folder containing all scraped song lyrics, structured and formatted in Markdown | [Lyrics](https://drive.google.com/drive/folders/1-Ki6f9MKjMnHZI2lTrlVJhhE2eamiYT_) |
+| Exports | Scraped data from LinkedIn and other platforms such as YouTube, Google, and more, focused on Montreal-based founders | [Exports](https://drive.google.com/drive/folders/1uO2QN9OiUtdGfF9qxkyD4zgwSXqfxQHR) |
+| End of Month | Folder grouping all documents accumulated throughout the year to prepare for the fiscal year-end | [End of Month](https://drive.google.com/drive/folders/1_y3FuaofurdCmzxa75vtCBf5KXq26GeB) |
