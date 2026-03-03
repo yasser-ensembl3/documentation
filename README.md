@@ -17,3 +17,4 @@ Central documentation and process guides for all projects.
 | [Scraping Genius](Scraping-Genius/) | n8n workflow — Genius.com lyrics scraping with Puppeteer, Google Sheets storage | [Process](Scraping-Genius/PROCESS.md) |
 | [Scraping Centris.ca](Scraping-Centris/) | Real estate scraping — n8n workflow + Puppeteer scripts for centris.ca property data | [Process](Scraping-Centris/PROCESS.md) |
 | [Products Scrapers](Products-Scrapers/) | Multi-provider e-commerce scraping toolkit — Apify, Bright Data, Channel3, DataForSEO, Zyte + n8n Shopify workflow with PostgreSQL | [Process](Products-Scrapers/PROCESS.md) |
+| [Founder MTL](Founder-MTL/) | MiniVault project dashboard — Notion, Google Drive, Gmail, GitHub, AI reports in a unified Next.js 14 interface | [Process](Founder-MTL/PROCESS.md) |
