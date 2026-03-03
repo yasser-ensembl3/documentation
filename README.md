@@ -1,8 +1,6 @@
-# Documentation
+# Projects Documentation
 
 Central documentation and process guides for all projects.
-
-## Projects
 
 | Project | Description | Doc |
 |---------|-------------|-----|
