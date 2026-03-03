@@ -19,3 +19,4 @@ Central documentation and process guides for all projects.
 | [Products Scrapers](Products-Scrapers/) | Multi-provider e-commerce scraping toolkit — Apify, Bright Data, Channel3, DataForSEO, Zyte + n8n Shopify workflow with PostgreSQL | [Process](Products-Scrapers/PROCESS.md) |
 | [Founder MTL](Founder-MTL/) | MiniVault project dashboard — Notion, Google Drive, Gmail, GitHub, AI reports in a unified Next.js 14 interface | [Process](Founder-MTL/PROCESS.md) |
 | [Content Vault](Content-Vault/) | Read-only content reader — Notion-backed with n8n transcript summaries, markdown preview, favorites, read/unread tracking | [Process](Content-Vault/PROCESS.md) |
+| [Dashboard MiniVault](Dashboard-MiniVault/) | MetaVault command center — aggregates all vaults, 6 Notion DBs, GitHub Project V2, Claude AI media curation, digest feed | [Process](Dashboard-MiniVault/PROCESS.md) |
