@@ -21,3 +21,4 @@ Central documentation and process guides for all projects.
 | [Content Vault](Content-Vault/) | Read-only content reader — Notion-backed with n8n transcript summaries, markdown preview, favorites, read/unread tracking | [Process](Content-Vault/PROCESS.md) |
 | [Dashboard MiniVault](Dashboard-MiniVault/) | MetaVault command center — aggregates all vaults, 6 Notion DBs, GitHub Project V2, Claude AI media curation, digest feed | [Process](Dashboard-MiniVault/PROCESS.md) |
 | [Present Agent](Present-Agent/) | MiniVault template — reusable dashboard boilerplate with setup script, 6 Notion DBs, dual AI, OAuth, schema-adaptive API | [Process](Present-Agent/PROCESS.md) |
+| [Kai Claude Code Config](Kai-Claude-Code-Config/) | Personal AI Infrastructure — 12 skills, 8 hooks, 3 tools, 2 MCP servers (Notion + Shopify), 10-tier security, structured history | [Process](Kai-Claude-Code-Config/PROCESS.md) |
