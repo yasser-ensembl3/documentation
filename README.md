@@ -14,3 +14,4 @@ Central documentation and process guides for all projects.
 | [Founders Graph](Founders-Graph/) | Multi-source founder profiling pipeline — web scraping, LinkedIn, YouTube, LLM enrichment and synthesis | [Process](Founders-Graph/PROCESS.md) |
 | [Options Model](Options-Model/) | Montreal Exchange options dashboard — Python scraper, PostgreSQL storage, analytics charts, AI analysis | [Process](Options-Model/PROCESS.md) |
 | [Tao Bite](Tao-Bite/) | PDF knowledge base with RAG — Qdrant vector search, OpenAI embeddings, Claude AI content generation | [Process](Tao-Bite/PROCESS.md) |
+| [Scraping Genius](Scraping-Genius/) | n8n workflow — Genius.com lyrics scraping with Puppeteer, Google Sheets storage | [Process](Scraping-Genius/PROCESS.md) |
